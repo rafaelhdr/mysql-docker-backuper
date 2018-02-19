@@ -1,21 +1,12 @@
-filename=$(date +"%s")
 
-./wait-for ${DB_HOST}:3306 -t 60 -- echo "Connected to DB"
-if [ "$?" != "0" ]; then
-    echo "Could not connect to DB"
-    exit 1
+if [ -z "${SCHEDULE_CRON}" ] || [ "${SCHEDULE_CRON}" = "" ]; then
+    sh /export.sh
+
+    # Sleep for swarm container verification
+    # This avoid creation of multiple containers on swarm mode
+    sleep 10
+else
+    echo "$SCHEDULE_CRON /bin/sh /export.sh" >> /backuper.cron
+    crontab /backuper.cron
+    crond -f
 fi
-
-mysqldump \
-    -h ${DB_HOST} \
-    -u ${DB_USER} \
-    --password=${DB_PASSWORD} \
-    $DB_DATABASE > ${filename}.sql
-
-gzip ${filename}.sql
-
-aws s3 cp ${filename}.sql.gz s3://${AWS_BUCKET}/${filename}.sql.gz
-
-# Sleep for swarm container verification
-# This avoid creation of multiple containers on swarm mode
-sleep 10

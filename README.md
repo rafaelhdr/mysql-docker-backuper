@@ -17,7 +17,7 @@ docker service create \
     --env AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
     --env AWS_BUCKET=$AWS_BUCKET \
     --network my-network \
-    rafaelhdr/mysql-docker-backuper:0.1
+    rafaelhdr/mysql-docker-backuper:0.2
 ```
 
 ## Parameters
@@ -25,10 +25,11 @@ docker service create \
 * DB_USER
 * DB_PASSWORD
 * DB_DATABASE
+* DB_HOST
 * AWS_ACCESS_KEY_ID
 * AWS_SECRET_ACCESS_KEY
-* AWS_SECRET_ACCESS_KEY
 * AWS_BUCKET - The name of the bucket, but can append a path, for example `mybucket/path/to/some/directory`
+* SCHEDULE_CRON (Optional) - Crontab format scheduler. Keeps the service alive. Example for once a day `0 4 * * *`
 
 ## Example
 
@@ -58,7 +59,7 @@ docker run \
     --env AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
     --env AWS_BUCKET=$AWS_BUCKET \
     --network my-network \
-    rafaelhdr/mysql-docker-backuper:0.1
+    rafaelhdr/mysql-docker-backuper:0.2
 ```
 
 Check the database backup at your AWS S3.
